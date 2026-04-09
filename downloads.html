@@ -428,7 +428,7 @@ src="https://www.facebook.com/tr?id=751384005733432&ev=PageView&noscript=1"
           <span class="di-meta-val">12 MB</span>
         </div>
       </div>
-      <a href="pdfs/Forms-Raka-Studio-26.pdf" target="_blank" class="dl-btn">View Catalogue <span class="dl-arrow">↓</span></a>
+      <button class="dl-btn" onclick="openDownloadModal('pdfs/Forms-Raka-Studio-26.pdf','Forms Catalogue')">View Catalogue <span class="dl-arrow">↓</span></button>
     </div>
   </div>
 
@@ -455,7 +455,7 @@ src="https://www.facebook.com/tr?id=751384005733432&ev=PageView&noscript=1"
           <span class="di-meta-val">14 MB</span>
         </div>
       </div>
-      <a href="pdfs/Furniture-Raka-Studio-26.pdf" target="_blank" class="dl-btn">View Catalogue <span class="dl-arrow">↓</span></a>
+      <button class="dl-btn" onclick="openDownloadModal('pdfs/Furniture-Raka-Studio-26.pdf','Furniture Catalogue')">View Catalogue <span class="dl-arrow">↓</span></button>
     </div>
   </div>
 
@@ -482,7 +482,7 @@ src="https://www.facebook.com/tr?id=751384005733432&ev=PageView&noscript=1"
           <span class="di-meta-val">24 MB</span>
         </div>
       </div>
-      <a href="pdfs/Lumination-Raka-Studio-26.pdf" target="_blank" class="dl-btn">View Catalogue <span class="dl-arrow">↓</span></a>
+      <button class="dl-btn" onclick="openDownloadModal('pdfs/Lumination-Raka-Studio-26.pdf','Lumination Catalogue')">View Catalogue <span class="dl-arrow">↓</span></button>
     </div>
   </div>
 
@@ -534,6 +534,29 @@ src="https://www.facebook.com/tr?id=751384005733432&ev=PageView&noscript=1"
   </div>
 </footer>
 
+<!-- DOWNLOAD GATE MODAL -->
+<div id="downloadModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+  <div style="background:#fff;max-width:440px;width:90%;padding:48px 40px;position:relative;">
+    <button onclick="closeDownloadModal()" style="position:absolute;top:16px;right:20px;background:none;border:none;font-size:22px;cursor:pointer;color:#666;">&times;</button>
+    <p style="font-family:'Epilogue',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#888;margin:0 0 12px;">Download Catalogue</p>
+    <h3 id="modalTitle" style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin:0 0 28px;color:#0d0d0d;"></h3>
+    <form id="downloadGateForm" name="catalogue-downloads" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="catalogue-downloads">
+      <input type="hidden" name="catalogue" id="modalCatalogue">
+      <p hidden><input name="bot-field"></p>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-family:'Epilogue',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:8px;">Full Name</label>
+        <input type="text" name="name" required placeholder="Your full name" style="width:100%;border:1px solid #ddd;padding:12px 14px;font-family:'Epilogue',sans-serif;font-size:13px;box-sizing:border-box;outline:none;">
+      </div>
+      <div style="margin-bottom:28px;">
+        <label style="display:block;font-family:'Epilogue',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:8px;">Email Address</label>
+        <input type="email" name="email" required placeholder="your@email.com" style="width:100%;border:1px solid #ddd;padding:12px 14px;font-family:'Epilogue',sans-serif;font-size:13px;box-sizing:border-box;outline:none;">
+      </div>
+      <button type="submit" id="modalSubmitBtn" style="width:100%;background:#0d0d0d;color:#fff;border:none;padding:16px;font-family:'Epilogue',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;">Download Now →</button>
+    </form>
+  </div>
+</div>
+
 <script>
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
@@ -556,6 +579,49 @@ function tick() {
   window.scrollTo(0, curr + diff * 0.14);
   rafId = requestAnimationFrame(tick);
 }, { passive: false });
+</script>
+
+<script>
+let pendingPdf = '';
+function openDownloadModal(pdf, title) {
+  pendingPdf = pdf;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalCatalogue').value = title;
+  document.getElementById('downloadGateForm').reset();
+  document.getElementById('modalCatalogue').value = title;
+  document.getElementById('modalSubmitBtn').textContent = 'Download Now →';
+  document.getElementById('modalSubmitBtn').disabled = false;
+  const m = document.getElementById('downloadModal');
+  m.style.display = 'flex';
+}
+function closeDownloadModal() {
+  document.getElementById('downloadModal').style.display = 'none';
+}
+document.getElementById('downloadModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDownloadModal();
+});
+document.getElementById('downloadGateForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('modalSubmitBtn');
+  btn.textContent = 'Preparing…';
+  btn.disabled = true;
+  try {
+    const data = new FormData(this);
+    await fetch('/', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, body: new URLSearchParams(data).toString() });
+    closeDownloadModal();
+    const a = document.createElement('a');
+    a.href = pendingPdf;
+    a.download = '';
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch(err) {
+    btn.textContent = 'Download Now →';
+    btn.disabled = false;
+    alert('Something went wrong. Please try again.');
+  }
+});
 </script>
 </body>
 </html>
