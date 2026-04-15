@@ -1761,7 +1761,7 @@ async function init(){
         ${specs.length ? `<div class="spec-block reveal d3">${specHTML}</div>` : ''}
         ${tagsHTML ? `<div class="tags reveal d3">${tagsHTML}</div>` : ''}
         ${desc ? `<p class="info-desc reveal d3">${desc}</p>` : ''}
-        <a href="mailto:hello@rakastudio.com?subject=Enquiry: ${encodeURIComponent(item.title)}" class="enquire-btn reveal d4">Enquire</a>
+        <button class="enquire-btn reveal d4" onclick="openEnquiryModal('${item.title.replace(/'/g, "\\'")}')">Enquire</button>
       </div>
     </div>
 
@@ -1858,6 +1858,69 @@ async function init(){
 }
 
 init();
+</script>
+
+<!-- Enquiry Modal -->
+<div id="enquiryModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+  <div style="background:#fff;max-width:480px;width:90%;padding:48px 40px;position:relative;">
+    <button onclick="closeEnquiryModal()" style="position:absolute;top:16px;right:20px;background:none;border:none;font-size:20px;cursor:pointer;color:#0d0d0d;line-height:1;">&times;</button>
+    <p style="font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#888;margin-bottom:8px;">Enquiry</p>
+    <h2 id="enquiryProductTitle" style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:32px;color:#0d0d0d;"></h2>
+    <form id="enquiryForm" name="product-enquiries" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="product-enquiries">
+      <input type="hidden" name="bot-field">
+      <input type="hidden" name="product" id="enquiryProduct">
+      <div style="margin-bottom:16px;">
+        <input type="text" name="name" placeholder="Your Name" required style="width:100%;padding:14px 16px;border:1px solid #d0d0d0;font-family:'Epilogue',sans-serif;font-size:13px;outline:none;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:16px;">
+        <input type="email" name="email" placeholder="Email Address" required style="width:100%;padding:14px 16px;border:1px solid #d0d0d0;font-family:'Epilogue',sans-serif;font-size:13px;outline:none;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:16px;">
+        <input type="text" name="location" placeholder="City / Country" style="width:100%;padding:14px 16px;border:1px solid #d0d0d0;font-family:'Epilogue',sans-serif;font-size:13px;outline:none;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:24px;">
+        <textarea name="message" placeholder="Message (optional)" rows="4" style="width:100%;padding:14px 16px;border:1px solid #d0d0d0;font-family:'Epilogue',sans-serif;font-size:13px;outline:none;box-sizing:border-box;resize:vertical;"></textarea>
+      </div>
+      <button type="submit" style="width:100%;background:#0d0d0d;color:#fff;font-family:'Epilogue',sans-serif;font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;padding:18px;border:none;cursor:pointer;">Send Enquiry</button>
+    </form>
+    <div id="enquirySuccess" style="display:none;text-align:center;padding:24px 0;">
+      <p style="font-size:13px;color:#0d0d0d;margin-bottom:8px;">Thank you for your enquiry.</p>
+      <p style="font-size:11px;color:#888;">We'll be in touch within 1–2 business days.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function openEnquiryModal(title) {
+  document.getElementById('enquiryProductTitle').textContent = title;
+  document.getElementById('enquiryProduct').value = title;
+  document.getElementById('enquirySuccess').style.display = 'none';
+  document.getElementById('enquiryForm').style.display = 'block';
+  const modal = document.getElementById('enquiryModal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeEnquiryModal() {
+  document.getElementById('enquiryModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+document.getElementById('enquiryModal').addEventListener('click', function(e) {
+  if (e.target === this) closeEnquiryModal();
+});
+document.getElementById('enquiryForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const form = this;
+  fetch('/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: new URLSearchParams(new FormData(form)).toString()
+  }).then(() => {
+    form.style.display = 'none';
+    document.getElementById('enquirySuccess').style.display = 'block';
+    setTimeout(closeEnquiryModal, 3000);
+  }).catch(() => form.submit());
+});
 </script>
 </body>
 </html>
