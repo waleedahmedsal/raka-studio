@@ -616,6 +616,10 @@ footer {
 /* SVG logo */
 .logo-svg { height: 24px; width: 59px; display: block; }
 .footer-logo-svg { height: 24px; width: auto; display: block; margin-bottom: 2px; }
+
+.abu-credit { font-size:11px; letter-spacing:0.5px; color:#0d0d0d; text-align:center; }
+.abu-credit a { color:#0d0d0d; text-decoration:underline; }
+@media (max-width:600px) { .footer-bottom { flex-direction:column; align-items:center; gap:6px; text-align:center; } .abu-credit { order:-1; } }
 </style>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3">
   <link rel="icon" type="image/x-icon" href="/favicon.ico?v=3">
@@ -1006,7 +1010,7 @@ src="https://www.facebook.com/tr?id=751384005733432&ev=PageView&noscript=1"
   <div class="footer-bottom">
     <span class="footer-copy">© Raka Studio 2017–2025. All rights reserved.</span>
     <span class="footer-copy">rakastudio.com</span>
-    <span style="font-size:11px;letter-spacing:0.5px;color:#0d0d0d;position:absolute;left:50%;transform:translateX(-50%);">Made by <a href="https://www.abu.work" target="_blank" rel="noopener" style="color:#0d0d0d;text-decoration:underline;">abu.work</a></span>
+    <span class="abu-credit">Made by <a href="https://www.abu.work" target="_blank" rel="noopener" style="color:#0d0d0d;text-decoration:underline;">abu.work</a></span>
   </div>
 </footer>
 
