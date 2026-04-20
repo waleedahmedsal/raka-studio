@@ -1882,6 +1882,7 @@ init();
       <input type="hidden" name="form-name" value="product-enquiries">
       <input type="hidden" name="bot-field">
       <input type="hidden" name="product" id="enquiryProduct">
+      <input type="hidden" name="_subject" id="enquirySubject">
       <div style="margin-bottom:16px;">
         <input type="text" name="name" placeholder="Your Name" required style="width:100%;padding:14px 16px;border:1px solid #d0d0d0;font-family:'Epilogue',sans-serif;font-size:13px;outline:none;box-sizing:border-box;">
       </div>
@@ -1907,6 +1908,7 @@ init();
 function openEnquiryModal(title) {
   document.getElementById('enquiryProductTitle').textContent = title;
   document.getElementById('enquiryProduct').value = title;
+  document.getElementById('enquirySubject').value = 'New Enquiry: ' + title;
   document.getElementById('enquirySuccess').style.display = 'none';
   document.getElementById('enquiryForm').style.display = 'block';
   const modal = document.getElementById('enquiryModal');
