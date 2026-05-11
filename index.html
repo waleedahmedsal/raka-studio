@@ -1143,6 +1143,7 @@ if (form) {
       });
       form.style.display = 'none';
       document.getElementById('formSuccess').style.display = 'block';
+      if (typeof fbq === 'function') fbq('track', 'Lead');
     } catch(err) {
       btn.textContent = 'Send Message →';
       btn.disabled = false;
